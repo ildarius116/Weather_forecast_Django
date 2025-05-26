@@ -87,7 +87,7 @@ def city_autocomplete(request):
 
 def search_history(request):
     if not request.user.is_authenticated:
-        return redirect('index')
+        return redirect('app:index')
 
     searches, city_stats = get_search_history_from_db(user=request.user)
 
