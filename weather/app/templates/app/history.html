@@ -1,0 +1,66 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">История поиска</h2>
+            <a href="{% url 'app:index' %}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Вернуться к поиску
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title">История поиска</h2>
+
+                <div class="mb-4">
+                    <h3 class="h5">Статистика поиска</h3>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Город</th>
+                                    <th>Количество запросов</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stat in city_stats %}
+                                <tr>
+                                    <td>{{ stat.city__name }}</td>
+                                    <td>{{ stat.count }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <h3 class="h5">Последние запросы</h3>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Город</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for search in searches %}
+                            <tr>
+                                <td>{{ search.search_date }}</td>
+                                <td><a href="?city={{ search.city.name }}">{{ search.city.name }}</a></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2">История поиска пока пуста.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

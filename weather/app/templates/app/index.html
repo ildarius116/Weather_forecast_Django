@@ -1,0 +1,133 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">Прогноз погоды</h2>
+
+                <form method="POST" action="{% url 'app:get_weather' %}" id="weather-form">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="city-input" class="form-label">Название города</label>
+                        <input type="text" class="form-control" id="city-input" name="city"
+                               placeholder="Введите название города" required autocomplete="off">
+                        <div id="autocomplete-results" class="autocomplete-dropdown"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Получить прогноз</button>
+                </form>
+
+                {% if error %}
+                    <div class="alert alert-danger mt-3">{{ error }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if recent_cities or location_city %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="h5">Быстрый доступ</h3>
+                <div class="d-flex flex-wrap gap-2">
+                    {% if location_city %}
+                        <a href="?city={{ location_city.name }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-geo-alt"></i> {{ location_city.name }}
+                        </a>
+                    {% endif %}
+                    {% for city in recent_cities %}
+                        <a href="?city={{ city.name }}" class="btn btn-outline-secondary">{{ city.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if city %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title d-flex justify-content-between align-items-center">
+                    Погода в {{ city.name }}
+                    <span class="badge bg-primary">{{ current.weather }}</span>
+                </h2>
+
+                <div class="current-weather">
+                    <div class="display-1">{{ current.temperature }}°C</div>
+                    <div class="weather-details">
+                        <div><i class="bi bi-wind"></i> Ветер: {{ current.windspeed }} км/ч</div>
+                        <div><i class="bi bi-compass"></i> Направление: {{ current.winddirection }}°</div>
+                        <div><i class="bi bi-clock"></i> Обновлено: {{ current.time }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="h5">Почасовой прогноз</h3>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Время</th>
+                                        <th>Температура (°C)</th>
+                                        <th>Влажность</th>
+                                        <th>Погода</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for hour in hourly_forecast %}
+                                    <tr>
+                                        <td>{{ hour.time }}</td>
+                                        <td>{{ hour.temperature }}</td>
+                                        <td>{{ hour.humidity }}%</td>
+                                        <td>{{ hour.weather }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="h5">Прогноз на неделю</h3>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Дата</th>
+                                        <th>Макс.</th>
+                                        <th>Мин.</th>
+                                        <th>Погода</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for day in daily_forecast %}
+                                    <tr>
+                                        <td>{{ day.date }}</td>
+                                        <td>{{ day.max_temp }}°C</td>
+                                        <td>{{ day.min_temp }}°C</td>
+                                        <td>{{ day.weather }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
