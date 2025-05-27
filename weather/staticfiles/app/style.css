@@ -35,3 +35,18 @@
 .weather-details i {
     margin-right: 0.5rem;
 }
+
+header nav {
+    gap: 0.5rem;
+}
+
+.user-info {
+    margin-right: 1rem;
+    color: #6c757d;
+}
+
+.btn-with-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}

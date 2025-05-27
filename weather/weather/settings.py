@@ -20,6 +20,8 @@ INSTALLED_APPS = [
     'app.apps.AppConfig',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
 
 ]
 
@@ -81,12 +83,32 @@ AUTHENTICATION_BACKENDS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    ]
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Weather Forecast API',
+    'DESCRIPTION': 'API for weather forecast and search history',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
+    'SECURITY': [{'basic': []}],
+    'SECURITY_SCHEMES': {
+        'basic': {
+            'type': 'http',
+            'scheme': 'basic',
+        }
+    },
+    'SCHEMA_PATH_PREFIX': '/api',
+    'SERVE_AUTHENTICATION': ['rest_framework.authentication.BasicAuthentication'],
 }
 
 LANGUAGE_CODE = 'ru-ru'
